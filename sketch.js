@@ -7,6 +7,7 @@ var score=0;
 var lives=3;
 var frequency;
 var gameState="serve";
+var resetFlag=false;
 
 
 function preload(){
@@ -38,6 +39,7 @@ function setup(){
     helicopter.addImage("helicopterforward",helicopterImg);
     helicopter.addImage("helicopterbackward",helicopterImg2);
     helicopter.scale=0.50;
+    helicopter.velocityX=3;
 
     slider = createSprite(displayWidth/2,displayHeight-40,150,20)
     slider.shapeColor="red";
@@ -63,11 +65,15 @@ function draw(){
         }
     }
     else if (gameState === "play"){
+        if(resetFlag){
+            helicopter.velocityX=3;
+            resetFlag=false;
+        }
         ground.changeImage("playBG",backgroundImg)
         helicopter.visible=true;
         slider.visible=true;
 
-        helicopter.velocityX=3;
+        
 
         //slider.collide(edges[0]);
         //slider.collide(edges[1]);
@@ -102,9 +108,11 @@ function draw(){
         if(GroupGift.get(i) !== null && GroupGift.isTouching(slider)){
             score+=30
             GroupGift.get(i).destroy();
+
             //console.log(score)
         }
         if(GroupGift.get(i) !== null && GroupGift.isTouching(edges[3])){
+            GroupGift.get(i).destroy();
             lives--
         }
         if( lives <= 0){
@@ -132,6 +140,15 @@ function draw(){
    if(keyDown("r")){
        ground.changeImage("serveBG",serveBackground)  
        gameState="serve";
+       helicopter.x=120;
+       slider.x=displayWidth/2;
+       GroupGift.destroyEach();
+       lives=3;
+       score=0;
+       helicopter.changeImage("helicopterforward",helicopterImg) ;
+       //helicopter.velocityX=3
+       resetFlag=true;
+
 }
 
     if(gameState !== "serve"){
