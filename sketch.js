@@ -2,6 +2,7 @@ var score=0;
 var life=3;
 var gift,helicopter,backgroundImg,slider,helicopterImg,giftImg,ground,helicopterImg2,serveBackground,endBackground;
 var edges;
+var background_1,background_2,background_3;
 var GroupGift,rand;
 var score=0;
 var lives=3;
@@ -17,6 +18,9 @@ function preload(){
     backgroundImg = loadImage("images/background3.png");
     serveBackground= loadImage("images/background.jpg");
     endBackground= loadImage("images/gameOver.png");
+    background_1=loadImage("images/background2.jpg");
+    background_2=loadImage("images/background4.jpg");
+    background_3=loadImage("images/background5.jpg");
 }
     
 function setup(){
@@ -26,7 +30,10 @@ function setup(){
     ground= createSprite(width/2,height/2,width,height)
     ground.addImage("serveBG",serveBackground);
     ground.addImage("playBG",backgroundImg);
-    ground.addImage("endBG",endBackground)
+    ground.addImage("endBG",endBackground);
+    ground.addImage("noonBG",background_1);
+    ground.addImage("eveningBG",background_2);
+    ground.addImage("nightBG",background_3);
     ground.scale=2
     
 
@@ -103,28 +110,45 @@ function draw(){
         console.log("forward"+helicopter.x)
         helicopter.changeImage("helicopterforward",helicopterImg);
         helicopter.velocityX=3
-    }
+    } 
+    console.log(score)
     for(var i=0;i<GroupGift.length;i++){
         if(GroupGift.get(i) !== null && GroupGift.isTouching(slider)){
             score+=30
             GroupGift.get(i).destroy();
 
-            //console.log(score)
+           
         }
+        
+
         if(GroupGift.get(i) !== null && GroupGift.isTouching(edges[3])){
             GroupGift.get(i).destroy();
             lives--
         }
-        if( lives <= 0){
+        if( lives <= 0 ){
             gameState="end";
         }
 
        }
+       /*if(score>=90){
+        GroupGift.velocityY=4;
+        console.log("X"+GroupGift.velocityX)
+    }*/
+       if(score>=1500){
+        ground.changeImage("noonBG",background_1);
     }
+    if(score>=3000){
+        ground.changeImage("eveningBG",background_2);
+        
+    }
+    if(score>=4500){
+        ground.changeImage("nightBG",background_3);
+    }
+}
    else if( gameState === "end"){
        ground.changeImage("endBG",endBackground);
 
-       stroke("white");
+       stroke("white"); 
        fill("blue");
        strokeWeight(5);
        textSize(30);
