@@ -1,10 +1,9 @@
-var score=0;
-var life=3;
+
 var gift,helicopter,backgroundImg,slider,helicopterImg,giftImg,ground,helicopterImg2,serveBackground,endBackground;
 var edges;
-var background_1,background_2,background_3;
+var background_1,background_2,background_3,slider_1,slider_2,sound1,sound2,sound3,sound4,sound5,sound7,sound6;
 var GroupGift,rand;
-var score=0;
+var score=3000;
 var lives=3;
 var frequency;
 var gameState="serve";
@@ -21,6 +20,15 @@ function preload(){
     background_1=loadImage("images/background2.jpg");
     background_2=loadImage("images/background4.jpg");
     background_3=loadImage("images/background5.jpg");
+    slider_1=loadImage("images/basket1.png");
+    slider_2=loadImage("images/basket2.png");
+    sound1=loadSound("sounds/arcade_game_level_up_tone.mp3")
+    sound2=loadSound("sounds/oh no.mp3")
+    sound3=loadSound("sounds/oh yes.mp3")
+    sound4=loadSound("sounds/PM_FN_Events_LvlUps_PowerUps_12.mp3")
+    sound5=loadSound("sounds/SMALL_CROWD_APPLAUSE-Yannick_Lemieux-1268806408.mp3")
+    sound6=loadSound("sounds/3797250_female-voice-try-again_by_urbazon_preview.mp3")
+
 }
     
 function setup(){
@@ -36,7 +44,6 @@ function setup(){
     ground.addImage("nightBG",background_3);
     ground.scale=2
     
-
     /*gift= createSprite(120,65)
     gift.addImage(giftImg);
     gift.scale=0.2;*/
@@ -49,7 +56,11 @@ function setup(){
     helicopter.velocityX=3;
 
     slider = createSprite(displayWidth/2,displayHeight-40,150,20)
-    slider.shapeColor="red";
+    slider.addImage("S1",slider_1);
+    slider.addImage("S2",slider_2);
+    slider.scale=0.75;
+
+    //slider.shapeColor="red";
     GroupGift=new Group()
     
 }
@@ -93,60 +104,88 @@ function draw(){
     }
     frequency=Math.round(random(50,100))
     if(frameCount % frequency === 0){
-        rand=Math.round(random(1,3));
+        //rand=Math.round(random(1,3));
         //console.log(rand)
         spawnGift();
     }
      
     if(helicopter.x>width-120){
-        console.log(helicopter.x)
+        //console.log(helicopter.x)
         helicopter.changeImage("helicopterbackward",helicopterImg2);
         helicopter.velocityX=-3
-        console.log(helicopter.velocityX)
+        //console.log(helicopter.velocityX)
     }
 
     
     if(helicopter.x<50){
-        console.log("forward"+helicopter.x)
+        //console.log("forward"+helicopter.x)
         helicopter.changeImage("helicopterforward",helicopterImg);
         helicopter.velocityX=3
     } 
-    console.log(score)
+   // console.log(score)
     for(var i=0;i<GroupGift.length;i++){
         if(GroupGift.get(i) !== null && GroupGift.isTouching(slider)){
             score+=30
             GroupGift.get(i).destroy();
-
-           
+           sound3.play();
         }
         
 
         if(GroupGift.get(i) !== null && GroupGift.isTouching(edges[3])){
             GroupGift.get(i).destroy();
             lives--
+            sound2.play();
         }
         if( lives <= 0 ){
             gameState="end";
+            sound6.play();
         }
 
        }
-       /*if(score>=90){
-        GroupGift.velocityY=4;
-        console.log("X"+GroupGift.velocityX)
-    }*/
        if(score>=1500){
         ground.changeImage("noonBG",background_1);
+        GroupGift.setVelocityYEach(3.8);
+        ground.scale=3;
     }
     if(score>=3000){
         ground.changeImage("eveningBG",background_2);
-        
+        ground.scale=3.7;
+        GroupGift.setVelocityYEach(4.5);
+
+        frequency=Math.round(random(40,80))
+        if(frameCount % frequency === 0){
+            spawnGift();
+        }
+        slider.changeImage("S2",slider_2)
+        //slider.velocityX=40;
     }
     if(score>=4500){
         ground.changeImage("nightBG",background_3);
+        GroupGift.setVelocityYEach(5);
+        ground.scale=2.8;
+
+        frequency=Math.round(random(70,120))
+        if(frameCount % frequency === 0){
+            spawnGift();
+        }
+       // slider.velocityX=45;
+    }
+    if(score===3000){
+        sound1.play();
+    }
+    if(score===4500){
+        sound4.play();
+    }
+    if(score===6000){
+        sound5.play();
+    }
+    if(score===8800){
+        sound1.play();
     }
 }
    else if( gameState === "end"){
        ground.changeImage("endBG",endBackground);
+       ground.scale=3;
 
        stroke("white"); 
        fill("blue");
@@ -183,14 +222,16 @@ function draw(){
     text("SCORE : "+score,30,30);
     text("LIVES : "+lives,displayWidth-115,30);
     }
-    console.log(gameState)
+    //console.log(gameState)
 }
 function keyPressed(){
     if(keyIsDown(LEFT_ARROW)){
-        slider.x-=45;
+        slider.x-=getVelocity();
+        //console.log(slider.x)
     }
     if(keyIsDown(RIGHT_ARROW)){
-        slider.x+=45;
+        slider.x+=getVelocity();
+       // console.log("right"+slider.x)
     }
 }
 function spawnGift(){
@@ -203,4 +244,15 @@ function spawnGift(){
         gift.lifeTime=height/3+20
         GroupGift.add(gift)
         
+}
+function getVelocity(){
+    if (score<1500){
+        return 45;
+    }
+    else if(score>=1500 || score<3000) {
+        return 50;
+    }
+    else {
+        return 55;
+    }
 }
