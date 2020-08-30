@@ -3,7 +3,7 @@ var gift,helicopter,backgroundImg,slider,helicopterImg,giftImg,ground,helicopter
 var edges;
 var background_1,background_2,background_3,slider_1,slider_2,sound1,sound2,sound3,sound4,sound5,sound7,sound6;
 var GroupGift,rand;
-var score=3000;
+var score=0;
 var lives=3;
 var frequency;
 var gameState="serve";
