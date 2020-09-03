@@ -125,7 +125,19 @@ function draw(){
    // console.log(score)
     for(var i=0;i<GroupGift.length;i++){
         if(GroupGift.get(i) !== null && GroupGift.isTouching(slider)){
+            if(score>=0 && score<=1500){
             score+=30
+            }
+            else if(score>=1500 && score<=3000){
+                score+=45
+                }
+                else if( score<=3000 && score<=4500){
+                    score+=55
+                    }
+                else {
+                        score+=60
+                        }
+
             GroupGift.get(i).destroy();
            sound3.play();
         }
@@ -136,9 +148,10 @@ function draw(){
             lives--
             sound2.play();
         }
-        if( lives <= 0 ){
+        if( lives <= 0 || score === 10500){
             gameState="end";
             sound6.play();
+            sound5.play();
         }
 
        }
@@ -167,8 +180,20 @@ function draw(){
         frequency=Math.round(random(70,120))
         if(frameCount % frequency === 0){
             spawnGift();
+            
         }
-       // slider.velocityX=45;
+    }
+
+        if(score>=7500){
+            //console.log(score)
+            ground.changeImage("playBG",backgroundImg);
+            GroupGift.setVelocityYEach(6.5);
+            ground.scale=2.8;
+    
+            frequency=Math.round(random(100,150))
+            if(frameCount % frequency === 0){
+                spawnGift();
+            }
     }
     if(score===3000){
         sound1.play();
@@ -193,6 +218,7 @@ function draw(){
        textSize(30);
        text("Press 'R' to restart the game ",100,100);
        
+      
        helicopter.visible=false;
        slider.visible=false;
        helicopter.velocityX=0;
@@ -252,7 +278,14 @@ function getVelocity(){
     else if(score>=1500 || score<3000) {
         return 50;
     }
-    else {
+    else if(score>=3000 || score<4500){
         return 55;
     }
+    else if(score>=4500 || score<6000){
+        return 60;
+    }
+    else {
+        return 65;
+    }
 }
+
